@@ -5,7 +5,7 @@ on:
     inputs:
       node-version:
         required: false
-        default: '24.x'
+        default: '24'
         type: string
         description: Node.js version to use for the build.
       pwsh:
@@ -39,15 +39,15 @@ jobs:
     name: Build & Test
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
       - name: Set Node.js v${{ inputs.node-version }} Up
         uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
           registry-url: 'https://registry.npmjs.org/'
 
+      - name: Checkout Code
+        uses: actions/checkout@v4
+  
       - name: Install PowerShell
         if: inputs.pwsh
         uses: PSModule/Install-PowerShell@v1

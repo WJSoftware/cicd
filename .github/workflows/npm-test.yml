@@ -9,8 +9,8 @@ on:
         description: Reference (e.g. branch, tag, commit SHA).
       node-version:
         required: false
-        default: 24
-        type: number
+        default: '24'
+        type: string
         description: Node.js version to use for the build.
       pwsh:
         required: false
@@ -46,9 +46,7 @@ jobs:
 
       - name: Checkout Code
         uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.ref }}
-    
+  
       - name: Install PowerShell
         if: inputs.pwsh
         uses: PSModule/Install-PowerShell@v1
