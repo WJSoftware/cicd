@@ -3,46 +3,52 @@ name: NPM CI - Build and Test
 on:
   workflow_call:
     inputs:
+      ref:
+        required: true
+        type: string
+        description: Reference (e.g. branch, tag, commit SHA).
       node-version:
         required: false
         default: 24
         type: number
-        description: 'Node.js version to use for the build.'
+        description: Node.js version to use for the build.
       pwsh:
         required: false
         default: true
         type: boolean
-        description: 'Whether to install PowerShell for the build.'
+        description: Whether to install PowerShell for the build.
       build-script:
         required: false
-        default: 'build'
+        default: build
         type: string
-        description: 'Custom build script to run.'
+        description: Custom build script to run.
       test-script:
         required: false
-        default: 'test'
+        default: test
         type: string
-        description: 'Custom test script to run.'
+        description: Custom test script to run.
       build:
         required: false
         default: true
         type: boolean
-        description: 'Whether to run the build step before testing.'
+        description: Whether to run the build step before testing.
 
 jobs:
   build-and-test:
     name: Build & Test
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
       - name: Set Node.js v${{ inputs.node-version }} Up
         uses: actions/setup-node@v4
         with:
           node-version: ${{ inputs.node-version }}
           registry-url: 'https://registry.npmjs.org/'
 
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+    
       - name: Install PowerShell
         if: inputs.pwsh
         uses: PSModule/Install-PowerShell@v1
