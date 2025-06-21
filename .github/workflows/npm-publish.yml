@@ -23,12 +23,12 @@ on:
         default: 'test'
         type: string
         description: Custom test script to run.
-      npm_tag:
+      npm-tag:
         description: NPM tag to publish the package (e.g., latest, beta, etc.)
         required: false
         default: 'latest'
         type: string
-      dry_run:
+      dry-run:
         description: Perform a dry run (true/false)
         type: boolean
         default: false
@@ -62,13 +62,13 @@ jobs:
         run: npm run ${{ inputs.test-script }}
 
       - name: Publish to NPM (Dry Run)
-        if: github.ref == 'refs/heads/main' && inputs.dry_run == 'true'
+        if: github.ref == 'refs/heads/main' && inputs.dry-run == 'true'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --access public --tag ${{ inputs.npm_tag }} --dry-run
+        run: npm publish --access public --tag ${{ inputs.npm-tag }} --dry-run
 
       - name: Publish to NPM
-        if: github.ref == 'refs/heads/main' && inputs.dry_run == 'false'
+        if: github.ref == 'refs/heads/main' && inputs.dry-run == 'false'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --access public --tag ${{ inputs.npm_tag }}
+        run: npm publish --access public --tag ${{ inputs.npm-tag }}
