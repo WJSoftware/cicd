@@ -17,6 +17,7 @@ but note that these are not intended for general consumption use.
 | `build-script` | `string` | `build` | The name of the script (as defined in package.json) to execute to have the project built. |
 | `test-script` | `string` | `test` | The name of the script (as defined in package.json) to execute to have the project tested. |
 | `build` | `boolean` | `true` | Whether to build the project or not. |
+| `ref` | `string` | | Reference (e.g. branch, tag, commit SHA). |
 
 All inputs are optional.
 

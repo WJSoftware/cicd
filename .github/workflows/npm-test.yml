@@ -3,31 +3,35 @@ name: NPM CI - Build and Test
 on:
   workflow_call:
     inputs:
+      ref:
+        required: true
+        type: string
+        description: Reference (e.g. branch, tag, commit SHA).
       node-version:
         required: false
         default: '24'
         type: string
-        description: 'Node.js version to use for the build.'
+        description: Node.js version to use for the build.
       pwsh:
         required: false
         default: true
         type: boolean
-        description: 'Whether to install PowerShell for the build.'
+        description: Whether to install PowerShell for the build.
       build-script:
         required: false
-        default: 'build'
+        default: build
         type: string
-        description: 'Custom build script to run.'
+        description: Custom build script to run.
       test-script:
         required: false
-        default: 'test'
+        default: test
         type: string
-        description: 'Custom test script to run.'
+        description: Custom test script to run.
       build:
         required: false
         default: true
         type: boolean
-        description: 'Whether to run the build step before testing.'
+        description: Whether to run the build step before testing.
 
 jobs:
   build-and-test:
