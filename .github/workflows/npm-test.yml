@@ -3,10 +3,6 @@ name: NPM CI - Build and Test
 on:
   workflow_call:
     inputs:
-      ref:
-        required: true
-        type: string
-        description: Reference (e.g. branch, tag, commit SHA).
       node-version:
         required: false
         default: '24'
