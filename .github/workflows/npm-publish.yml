@@ -68,13 +68,13 @@ jobs:
         run: npm run ${{ inputs.test-script }}
 
       - name: Publish to NPM (Dry Run)
-        if: github.ref == inputs.dry-run
+        if: inputs.dry-run
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npm publish --access public --tag ${{ inputs.npm-tag }} --dry-run
 
       - name: Publish to NPM
-        if: github.ref == !inputs.dry-run
+        if: ${{ !inputs.dry-run }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npm publish --access public --tag ${{ inputs.npm-tag }}
