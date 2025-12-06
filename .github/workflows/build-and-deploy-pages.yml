@@ -36,10 +36,6 @@ on:
         required: false
         type: boolean
         default: true
-    secrets:
-      GITHUB_TOKEN:
-        description: 'GitHub token for deployment'
-        required: false
 
 permissions:
   contents: read
