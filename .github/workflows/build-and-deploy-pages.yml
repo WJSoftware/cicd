@@ -1,0 +1,100 @@
+name: Build and Deploy to GitHub Pages
+
+on:
+  workflow_call:
+    inputs:
+      project_folder:
+        description: 'The folder containing the project to build'
+        required: true
+        type: string
+      output_folder:
+        description: 'The folder containing the built output (relative to project_folder)'
+        required: true
+        type: string
+      target_branch:
+        description: 'The branch to deploy to GitHub Pages'
+        required: false
+        type: string
+        default: 'Pages'
+      node_version:
+        description: 'Node.js version to use for building'
+        required: false
+        type: string
+        default: '24'
+      build_command:
+        description: 'The build command to run'
+        required: false
+        type: string
+        default: 'npm run build'
+      install_command:
+        description: 'The install command to run'
+        required: false
+        type: string
+        default: 'npm ci'
+      use_gh_pages_action:
+        description: 'Use GitHub Pages action instead of gh-pages npm package'
+        required: false
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node_version }}
+          cache: 'npm'
+          cache-dependency-path: ${{ inputs.project_folder }}/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ${{ inputs.project_folder }}
+        run: ${{ inputs.install_command }}
+
+      - name: Build project
+        working-directory: ${{ inputs.project_folder }}
+        run: ${{ inputs.build_command }}
+
+      # Option 1: Use GitHub Pages action (for pre-configured repositories)
+      - name: Upload artifact
+        if: ${{ inputs.use_gh_pages_action }}
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ inputs.project_folder }}/${{ inputs.output_folder }}
+
+      - name: Deploy to GitHub Pages
+        if: ${{ inputs.use_gh_pages_action }}
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      # Option 2: Use gh-pages npm package (classic approach)
+      - name: Install gh-pages
+        if: ${{ !inputs.use_gh_pages_action }}
+        working-directory: ${{ inputs.project_folder }}
+        run: npm install --save-dev gh-pages
+
+      - name: Deploy with gh-pages
+        if: ${{ !inputs.use_gh_pages_action }}
+        working-directory: ${{ inputs.project_folder }}
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          npx gh-pages -d ${{ inputs.output_folder }} -b ${{ inputs.target_branch }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN || github.token }}
