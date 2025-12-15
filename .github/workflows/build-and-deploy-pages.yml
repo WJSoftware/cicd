@@ -31,11 +31,6 @@ on:
         required: false
         type: string
         default: 'npm ci'
-      use_gh_pages_action:
-        description: 'Use GitHub Pages action instead of gh-pages npm package'
-        required: false
-        type: boolean
-        default: true
 
 permissions:
   contents: read
@@ -73,28 +68,10 @@ jobs:
 
       # Option 1: Use GitHub Pages action (for pre-configured repositories)
       - name: Upload artifact
-        if: ${{ inputs.use_gh_pages_action }}
         uses: actions/upload-pages-artifact@v3
         with:
           path: ${{ inputs.project_folder }}/${{ inputs.output_folder }}
 
       - name: Deploy to GitHub Pages
-        if: ${{ inputs.use_gh_pages_action }}
         id: deployment
         uses: actions/deploy-pages@v4
-
-      # Option 2: Use gh-pages npm package (classic approach)
-      - name: Install gh-pages
-        if: ${{ !inputs.use_gh_pages_action }}
-        working-directory: ${{ inputs.project_folder }}
-        run: npm install --save-dev gh-pages
-
-      - name: Deploy with gh-pages
-        if: ${{ !inputs.use_gh_pages_action }}
-        working-directory: ${{ inputs.project_folder }}
-        run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          npx gh-pages -d ${{ inputs.output_folder }} -b ${{ inputs.target_branch }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN || github.token }}
