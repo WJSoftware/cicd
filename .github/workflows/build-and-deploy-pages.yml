@@ -16,6 +16,10 @@ on:
         required: false
         type: string
         default: 'Pages'
+      environment:
+        description: 'The environment to deploy to'
+        required: true
+        type: string
       node_version:
         description: 'Node.js version to use for building'
         required: false
@@ -46,13 +50,17 @@ concurrency:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.environment }}
+      url: ${{ steps.deployment.outputs.page_url }}
+      deployment: true
     
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: ${{ inputs.node_version }}
           cache: 'npm'
@@ -68,10 +76,10 @@ jobs:
 
       # Option 1: Use GitHub Pages action (for pre-configured repositories)
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: ${{ inputs.project_folder }}/${{ inputs.output_folder }}
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
