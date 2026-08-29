@@ -35,13 +35,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set Node.js v${{ inputs.node-version }} Up
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: ${{ inputs.node-version }}
           registry-url: 'https://registry.npmjs.org/'
 
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
   
       - name: Install PowerShell
         if: inputs.pwsh
