@@ -11,11 +11,6 @@ on:
         description: 'The folder containing the built output (relative to project_folder)'
         required: true
         type: string
-      target_branch:
-        description: 'The branch to deploy to GitHub Pages'
-        required: false
-        type: string
-        default: 'Pages'
       environment:
         description: 'The environment to deploy to'
         required: true
